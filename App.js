@@ -4,37 +4,56 @@ import {
   View, 
   StyleSheet,
   TextInput,
-  StatusBar } from "react-native";
+  StatusBar,
+  Image,
+  TouchableOpacity } from "react-native";
 
 class App extends Component{
 
   constructor(props){
     super(props);
     this.state = {
-      nome: '',
+      frase: '',
+      botao: 'Aperte para quebrar o biscoito',
+      img: require('./src/biscoito.png'),
     };
 
-    this.pegaNome = this.pegaNome.bind(this);
+    this.frases = [
+      'frase 1',
+      'frase 2',
+      'frase 3',
+      'frase 4',
+    ];
+
+    this.quebrabiscoito = this.quebrabiscoito.bind(this);
   }
 
-  pegaNome(texto){
-    if(texto.legth > 0){
-      this.setState({nome: ''})
-    }else{
-      this.setState({nome: 'Bem vindo: ' + texto})
-    }
-
+  quebrabiscoito(){
+    let randomNumber = Math.floor(Math.random() * this.frases.length);
+      this.setState({
+        frase: '"' + this.frases[randomNumber] + '"',
+        img: require('./src/biscoitoaberto.png'),
+        botao: 'Aperte para uma nova messagem',
+      })
+    
   }
 
   render(){
     return(
       <View style={styles.container}>
-        <Text>Informe seu nome</Text>
-        <TextInput
-        style={styles.input}
-        onChangeText={this.pegaNome}
+        <StatusBar/>
+        <Image
+          style={styles.img}
+          source={this.state.img}
         />
-        <Text>{this.state.nome}</Text>
+        <Text style={styles.texto}> {this.state.frase} </Text>
+
+         <TouchableOpacity style={styles.botao} onPress={this.quebrabiscoito}>
+          <View>
+            <Text style={styles.texto}> {this.state.botao} </Text>
+          </View>
+        </TouchableOpacity>
+
       </View>
     );
   }
@@ -45,19 +64,31 @@ const styles = StyleSheet.create({
     flex:1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#ABB2B9'
+    backgroundColor: '#212F3D'
   },
-  input:{
-    height: 70,
-    width: '100%',
-    borderWidth: 2,
-    borderColor: '#FDFEFE',
-    margin: 10,
-    fontSize: 25,
-    padding: 20,
+  img:{
+    height:250,
+    width: 250,
+    marginBottom: 20,
+  },
+  texto:{
+    color: 'orange',
+    fontSize: 20,
+    textAlign: 'center',
+  },
+  textobtn:{
+    color: 'orange',
+    fontSize: 20,
+    textAlign: 'center',
+  },
+  botao:{
+    borderWidth:2,
+    borderColor: 'orange',
     borderRadius: 30,
-    textAlign: 'center' ,
-  }
+    height: 30,
+    width: '60%',
+    marginTop: 20,
+  },
 
 });
 
