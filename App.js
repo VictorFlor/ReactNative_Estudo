@@ -13,46 +13,75 @@ class App extends Component{
   constructor(props){
     super(props);
     this.state = {
-      frase: '',
-      botao: 'Aperte para quebrar o biscoito',
-      img: require('./src/biscoito.png'),
+      img: require('./src/cronometro.png'),
+      time: 0,
+      txtOn: 'Iniciar',
+      lastTime: null,
     };
 
-    this.frases = [
-      'frase 1',
-      'frase 2',
-      'frase 3',
-      'frase 4',
-    ];
+    this.timeON = null;
 
-    this.quebrabiscoito = this.quebrabiscoito.bind(this);
+
+    this.cronometroON = this.cronometroON.bind(this);
+    this.cronometroReset = this.cronometroReset.bind(this);
   }
 
-  quebrabiscoito(){
-    let randomNumber = Math.floor(Math.random() * this.frases.length);
-      this.setState({
-        frase: '"' + this.frases[randomNumber] + '"',
-        img: require('./src/biscoitoaberto.png'),
-        botao: 'Aperte para uma nova messagem',
-      })
+  cronometroON(){
     
+    if(this.timeON != null){
+      clearInterval(this.timeON);
+      this.timeON = null;
+      this.setState({txtOn: 'Continuar'});
+    }else{
+
+        this.timeON = setInterval( () => {
+          this.setState({time: this.state.time + 0.1})
+        },100);
+        this.setState({txtOn: 'Parar',});
+    } 
   }
+
+  cronometroReset(){
+    if(this.timeON != null){
+      clearInterval(this.timeON);
+      this.timeON = null;
+    }
+    this.setState({
+      txtOn: 'Iniciar',
+      lastTime: this.state.time,
+      time: 0,
+    })
+
+  }
+
+
 
   render(){
     return(
       <View style={styles.container}>
-        <StatusBar/>
-        <Image
-          style={styles.img}
-          source={this.state.img}
-        />
-        <Text style={styles.texto}> {this.state.frase} </Text>
 
-         <TouchableOpacity style={styles.botao} onPress={this.quebrabiscoito}>
-          <View>
-            <Text style={styles.texto}> {this.state.botao} </Text>
-          </View>
-        </TouchableOpacity>
+        <Image style={styles.img} source={(this.state.img)}></Image>
+        <Text style={styles.txtcronometro}> 
+          {this.state.minutos} {this.state.time.toFixed(1)} 
+        </Text>
+
+        <View style={styles.btnArea}>
+
+            <TouchableOpacity style={styles.btn} onPress={this.cronometroON}>
+              <Text style={styles.btnTxt}>{this.state.txtOn}</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.btn} onPress={this.cronometroReset}>
+              <Text style={styles.btnTxt}>Reiniciar</Text>
+            </TouchableOpacity>
+
+        </View>
+
+        <View style={styles.btnArea}>
+          <Text style={styles.txtLastTime}> 
+            {this.state.lastTime > 0 ? 'Ultimo tempo: ' + this.state.lastTime.toFixed(1) : ''}
+          </Text>
+        </View>
 
       </View>
     );
@@ -66,30 +95,38 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#212F3D'
   },
-  img:{
-    height:250,
-    width: 250,
-    marginBottom: 20,
+  img: {
+    height: 250,
+    width: 200,
   },
-  texto:{
-    color: 'orange',
-    fontSize: 20,
-    textAlign: 'center',
+  txtcronometro: {
+    color: '#fff',
+    fontSize: 50,
+    marginTop: -140,
   },
-  textobtn:{
-    color: 'orange',
-    fontSize: 20,
-    textAlign: 'center',
+  btnArea:{
+    flexDirection: 'row',
+    marginTop: 90,
+    height: 40,
   },
-  botao:{
-    borderWidth:2,
-    borderColor: 'orange',
+  btn:{
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 3,
+    borderColor: '#fff',
     borderRadius: 30,
-    height: 30,
-    width: '60%',
-    marginTop: 20,
+    backgroundColor: '#fff',
   },
-
+  btnTxt: {
+    fontSize: 20,
+    textAlign: 'center'
+  },
+  txtLastTime:{
+    color: '#fff',
+    fontSize: 20,
+    fontStyle: "italic",
+  },
 });
 
 export default App;
